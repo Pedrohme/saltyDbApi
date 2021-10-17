@@ -1,12 +1,7 @@
 import express from "express";
+import api from "./api";
 const router = express.Router();
 
-router.get('/api', function (req, res) {
-	res.status(200).send({
-		success: "true",
-		message: "welcome to saltybot database api",
-		version: "1.0.0"
-	});
-});
+router.use('/', api.router);
 
-export { router };
+export default { router };

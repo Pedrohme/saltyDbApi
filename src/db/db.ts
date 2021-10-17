@@ -11,9 +11,9 @@ async function query(query:string, values:(string|number)[]) {
         return res
     }
     catch (err) {
-        console.log((<Error>err).stack);
+        if (err instanceof Error) console.log(err.message);
         return null;
     }
 }
 
-export {query};
+export default {query};

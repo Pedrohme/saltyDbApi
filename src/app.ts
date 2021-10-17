@@ -1,11 +1,8 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-
-import indexRouter = require('./routes/index');
-import fighterRouter = require('./routes/fighter');
-import fightsRouter = require('./routes/fights');
-import loginRouter = require('./routes/login');
+import compression from "compression";
+import routers from "./routes";
 
 const app = express();
 
@@ -14,10 +11,8 @@ app.use(express.json());
 app.use(express.json({type: "application/vnd.api+json"}));
 app.use(cors());
 app.use(helmet());
+app.use(compression());
 
-app.use(indexRouter.router);
-app.use('/api/', fighterRouter.router);
-app.use('/api/', fightsRouter.router);
-app.use('/api/', loginRouter.router);
+app.use('/', routers.router);
 
 export {app};

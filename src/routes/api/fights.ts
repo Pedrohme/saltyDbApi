@@ -1,9 +1,9 @@
 import express from "express-promise-router";
-import fightsController = require("../controllers/fights");
-import loginController = require("../controllers/login");
+import fightsController from "../../controllers/api/fights";
+import loginController from "../../controllers/api/login";
 
 const router = express();
 
 router.post('/fights', loginController.verifyJWT,fightsController.insertFight);
 
-export {router};
+export default {router};
