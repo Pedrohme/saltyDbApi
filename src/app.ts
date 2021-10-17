@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import compression from "compression";
 
 import indexRouter = require('./routes/index');
 import fighterRouter = require('./routes/fighter');
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(express.json({type: "application/vnd.api+json"}));
 app.use(cors());
 app.use(helmet());
+app.use(compression());
 
 app.use(indexRouter.router);
 app.use('/api/', fighterRouter.router);
