@@ -6,6 +6,8 @@ const router = express();
 
 router.get('/fighter/:name', fighterController.getOneFighter);
 
+router.get('/fighter/', fighterController.getFighters);
+
 router.post('/fighter', loginController.verifyJWT, fighterController.insertFighter);
 
 router.put('/fighter', loginController.verifyJWT, fighterController.updateFighter);

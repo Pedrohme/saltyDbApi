@@ -6,7 +6,7 @@ async function insertFighter(req:Request, res:Response) {
     const response = await fighterModel.insertFighter(name);
 
     if (response) {
-        console.log(`${name} added successfully`, response.rows);
+        console.log(`${name} added successfully`);
         res.status(201).send({
             message: `${name} added successfully`,
             data: { fighter: [ name, 0, 0 ] }
@@ -15,6 +15,23 @@ async function insertFighter(req:Request, res:Response) {
     else {
         console.log(`insert fighter (${name}) Query error`);
         res.status(400).send({message: `insert fighter (${name}) Query error`});
+    }
+}
+
+async function getFighters(req:Request, res:Response) {
+    const { page } = req.query;
+    let pageNum = 1;
+    if (page) {
+        pageNum = parseInt(page as string);
+    }
+    const response = await fighterModel.getFighters(req.url, pageNum);
+    if (response) {
+        console.log("Fighter page successful");
+        res.status(200).send({data: response.rows});
+    }
+    else {
+        console.log("get Fighters query error");
+        res.status(400).send({ message: "Get fighters query error"});
     }
 }
 
@@ -30,7 +47,7 @@ async function getOneFighter(req:Request, res:Response) {
     }
     else if (response) {
         console.log(`${name} not found`);
-        res.status(204).send({ message: `${name} not found` });
+        res.status(204).send();
     }
     else {
         console.log(`Get one fighter (${name}) Query error`);
@@ -52,4 +69,4 @@ async function updateFighter(req:Request, res:Response) {
     }
 }
 
-export default {insertFighter, getOneFighter, updateFighter};
+export default {insertFighter, getFighters, getOneFighter, updateFighter};
