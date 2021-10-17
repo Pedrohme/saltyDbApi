@@ -1,6 +1,6 @@
 import express from "express-promise-router";
-import fighterController = require("../controllers/fighter");
-import loginController = require("../controllers/login");
+import fighterController = require("../../controllers/api/fighter");
+import loginController = require("../../controllers/api/login");
 
 const router = express();
 

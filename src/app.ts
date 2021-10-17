@@ -3,10 +3,10 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 
-import indexRouter = require('./routes/index');
-import fighterRouter = require('./routes/fighter');
-import fightsRouter = require('./routes/fights');
-import loginRouter = require('./routes/login');
+import apiIndexRouter = require('./routes/api/index');
+import apiFighterRouter = require('./routes/api/fighter');
+import apiFightsRouter = require('./routes/api/fights');
+import apiLoginRouter = require('./routes/api/login');
 
 const app = express();
 
@@ -17,9 +17,9 @@ app.use(cors());
 app.use(helmet());
 app.use(compression());
 
-app.use(indexRouter.router);
-app.use('/api', fighterRouter.router);
-app.use('/api', fightsRouter.router);
-app.use('/api', loginRouter.router);
+app.use('/api', apiIndexRouter.router);
+app.use('/api', apiFighterRouter.router);
+app.use('/api', apiFightsRouter.router);
+app.use('/api', apiLoginRouter.router);
 
 export {app};

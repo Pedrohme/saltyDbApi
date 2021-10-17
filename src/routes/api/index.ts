@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-router.get('/api', function (req, res) {
+router.get('', function (req, res) {
 	res.status(200).send({
 		success: "true",
 		message: "welcome to saltybot database api",
