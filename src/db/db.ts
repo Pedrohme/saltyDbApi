@@ -16,4 +16,4 @@ async function query(query:string, values:(string|number)[]) {
     }
 }
 
-export {query};
+export default {query};

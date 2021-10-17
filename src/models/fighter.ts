@@ -1,4 +1,4 @@
-import db = require("../db/db");
+import db from "../db/db";
 import nCache from "node-cache";
 import { QueryResult } from "pg";
 
@@ -8,7 +8,7 @@ const selectFighterQuery = "SELECT * FROM fighter WHERE name = $1";
 const insertFighterQuery = "INSERT INTO fighter(name, wins, losses) VALUES($1, $2, $3)";
 const updateFighterQuery = "UPDATE fighter SET wins = wins+$1, losses = losses+$2 WHERE name = $3";
 
-export async function insertFighter(name:string) {
+async function insertFighter(name:string) {
     const response = await db.query(insertFighterQuery, [name, 0, 0]);
     if (response) {
         return response;
@@ -18,7 +18,7 @@ export async function insertFighter(name:string) {
     }
 }
 
-export async function getOneFighter(url:string, name:string) {
+async function getOneFighter(url:string, name:string) {
     const cacheKey = "__cache__" + url;
     const value = await cache.get(cacheKey);
     if (value) {
@@ -30,7 +30,7 @@ export async function getOneFighter(url:string, name:string) {
     return response;
 }
 
-export async function updateFighter(wins:number, losses:number, name:string) {
+async function updateFighter(wins:number, losses:number, name:string) {
     const response = await db.query(updateFighterQuery, [wins, losses, name]);
     if (response) {
         return response;
@@ -39,3 +39,5 @@ export async function updateFighter(wins:number, losses:number, name:string) {
         return null;
     }
 }
+
+export default {insertFighter, getOneFighter, updateFighter};

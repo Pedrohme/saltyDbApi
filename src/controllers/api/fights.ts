@@ -1,7 +1,7 @@
-import fightsModel = require("../../models/fights");
+import fightsModel from "../../models/fights";
 import { Request, Response } from "express";
 
-export async function insertFight(req:Request, res:Response) {
+async function insertFight(req:Request, res:Response) {
     const { fightera, fighterb, winner } = req.body;
     const response = await fightsModel.insertFight(fightera, fighterb, winner);
 
@@ -14,3 +14,5 @@ export async function insertFight(req:Request, res:Response) {
         res.status(400).send({message: "Query error"});
     }
 }
+
+export default {insertFight};

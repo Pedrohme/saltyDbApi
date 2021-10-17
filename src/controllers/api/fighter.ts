@@ -1,7 +1,7 @@
-import fighterModel = require("../../models/fighter");
+import fighterModel from "../../models/fighter";
 import { Request, Response } from "express";
 
-export async function insertFighter(req:Request, res:Response) {
+async function insertFighter(req:Request, res:Response) {
     const { name } = req.body;
     const response = await fighterModel.insertFighter(name);
 
@@ -18,7 +18,7 @@ export async function insertFighter(req:Request, res:Response) {
     }
 }
 
-export async function getOneFighter(req:Request, res:Response) {
+async function getOneFighter(req:Request, res:Response) {
     const { name } = req.params;
     const response = await fighterModel.getOneFighter(req.url, name);
     if (response && response.rowCount > 0) {
@@ -38,7 +38,7 @@ export async function getOneFighter(req:Request, res:Response) {
     }
 }
 
-export async function updateFighter(req:Request, res:Response) {
+async function updateFighter(req:Request, res:Response) {
     const {wins, losses, name} = req.body;
 
     const response = await fighterModel.updateFighter(wins, losses, name);
@@ -51,3 +51,5 @@ export async function updateFighter(req:Request, res:Response) {
         res.status(400).send({ message: `Update Fighter (${name}) Query error`});
     }
 }
+
+export default {insertFighter, getOneFighter, updateFighter};

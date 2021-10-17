@@ -1,11 +1,11 @@
-import db = require("../../db/db");
+import db from "../../db/db";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import {Request, Response, NextFunction} from "express";
 
 const getAdminQuery = "SELECT * FROM admins WHERE name = $1";
 
-export async function generateJWT(req:Request, res:Response) {
+async function generateJWT(req:Request, res:Response) {
     const {user, password} = req.body;
         
     const response = await db.query(getAdminQuery, [user]);
@@ -32,7 +32,7 @@ export async function generateJWT(req:Request, res:Response) {
     }
 }
 
-export async function verifyJWT(req:Request, res:Response, next:NextFunction) {
+async function verifyJWT(req:Request, res:Response, next:NextFunction) {
     const token = req.headers['x-access-token'];
     if (!token) return res.status(401).send({ auth: false, message: 'No token provided'});
 
@@ -49,3 +49,5 @@ export async function verifyJWT(req:Request, res:Response, next:NextFunction) {
         }
     });
 }
+
+export default {generateJWT, verifyJWT};
