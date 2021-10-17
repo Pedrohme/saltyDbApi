@@ -18,8 +18,8 @@ app.use(helmet());
 app.use(compression());
 
 app.use(indexRouter.router);
-app.use('/api/', fighterRouter.router);
-app.use('/api/', fightsRouter.router);
-app.use('/api/', loginRouter.router);
+app.use('/api', fighterRouter.router);
+app.use('/api', fightsRouter.router);
+app.use('/api', loginRouter.router);
 
 export {app};
