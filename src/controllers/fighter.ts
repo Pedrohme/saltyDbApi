@@ -16,7 +16,7 @@ async function getFighters(req:Request, res:Response) {
         res.render("fighters", {fighters: response.rows, page:pageNum, limit:limitNum, url:req.baseUrl});
     }
     else {
-        console.log("get Fighters query error");
+        res.render("error");
         res.status(400).send({ message: "Get fighters query error"});
     }
 }
