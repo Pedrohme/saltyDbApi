@@ -1,0 +1,33 @@
+html
+    head
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="Content-Type", content="text/html;charset=UTF-8")
+        link(href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous")
+        style(type="text/css").
+            .card {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                word-wrap: break-word;
+                background-color: #fff;
+                background-clip: border-box;
+                border: 1px solid rgba(0, 0, 0, 0.04);
+                border-radius: .25rem;
+            }
+
+            .card .card-header {
+            background-color: #fff;
+            border-bottom: none;
+            }
+        title Error
+    body 
+        div.row.justify-content-center
+            div.col-md-12.col-sm-12
+                div.card.shadow-lg.border-0.rounded-lg.mt-5.mx-auto(style='width: 30rem;')
+                    h3.card-header.display-1.text-muted.text-center
+                        | 404
+                    span.card-subtitle.mb-2.text-muted.text-center
+                        | Page Could Not Be Found
+                    div.card-body.mx-auto
+                        a.btn.btn-sm.btn-info.text-white(type='button' href='/')  Back To Home 

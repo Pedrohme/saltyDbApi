@@ -19,12 +19,16 @@ async function insertFighter(req:Request, res:Response) {
 }
 
 async function getFighters(req:Request, res:Response) {
-    const { page } = req.query;
+    const { page, limit } = req.query;
     let pageNum = 1;
+    let limitNum = 10;
     if (page) {
         pageNum = parseInt(page as string);
     }
-    const response = await fighterModel.getFighters(req.url, pageNum);
+    if (limit) {
+        limitNum = parseInt(limit as string);
+    }
+    const response = await fighterModel.getFighters(req.url, pageNum, limitNum);
     if (response) {
         console.log("Fighter page successful");
         res.status(200).send({data: response.rows});
@@ -69,4 +73,32 @@ async function updateFighter(req:Request, res:Response) {
     }
 }
 
-export default {insertFighter, getFighters, getOneFighter, updateFighter};
+async function searchFighter(req:Request, res:Response) {
+    const { page, limit } = req.query;
+    const { name } = req.params;
+    let pageNum = 1;
+    let limitNum = 10;
+    if (page) {
+        pageNum = parseInt(page as string);
+    }
+    if (limit) {
+        limitNum = parseInt(limit as string);
+    }
+    const response = await fighterModel.searchFighter(req.url, name as string, pageNum, limitNum);
+    if (response && response.rowCount > 0) {
+        console.log("Query successful", response.rows);
+        res.status(200).send({
+            data: response.rows
+        });
+    }
+    else if (response) {
+        console.log(`${name} not found`);
+        res.status(204).send();
+    }
+    else {
+        console.log(`search fighter (${name}) Query error`);
+        res.status(400).send({ message: `search fighter (${name}) Query error` });
+    }
+}
+
+export default {insertFighter, getFighters, getOneFighter, updateFighter, searchFighter};

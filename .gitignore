@@ -64,3 +64,4 @@ config.json
 .eslintrc.json
 dist
 localtest.sh
+.DS_Store
