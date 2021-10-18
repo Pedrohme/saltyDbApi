@@ -55,19 +55,20 @@ html
         else
             div.container
                 h2 No fighters found
-            nav(aria-label='Page navigation')
-                ul.pagination.justify-content-center
-                    li.page-item
-                        a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) Previous
-                    li.page-item
-                        a.page-link(href=`${nextUrl}/?page=1&limit=${limit}`) Page 1
-        footer.footer
-            div.container
-                span
-                    | Items per page: 
-                    a(href=`${nextUrl}/?page=${page}&limit=10`) 10   
-                    a(href=`${nextUrl}/?page=${page}&limit=50`) 50   
-                    a(href=`${nextUrl}/?page=${page}&limit=100`) 100    
-        script(src="/scripts/scripts.js")
+            if (!search)
+                nav(aria-label='Page navigation')
+                    ul.pagination.justify-content-center
+                        li.page-item
+                            a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) Previous
+                        li.page-item
+                            a.page-link(href=`${nextUrl}/?page=1&limit=${limit}`) Page 1
+            footer.footer
+                div.container
+                    span
+                        | Items per page: 
+                        a(href=`${nextUrl}/?page=${page}&limit=10`) 10   
+                        a(href=`${nextUrl}/?page=${page}&limit=50`) 50   
+                        a(href=`${nextUrl}/?page=${page}&limit=100`) 100    
+            script(src="/scripts/scripts.js")
             
         
