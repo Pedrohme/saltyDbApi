@@ -38,4 +38,25 @@ async function getOneFighter(req:Request, res:Response) {
     }
 }
 
-export default {getFighters, getOneFighter};
+async function searchFighter(req:Request, res:Response) {
+    const { page, limit } = req.query;
+    const { name } = req.params;
+    let pageNum = 1;
+    let limitNum = 10;
+    if (page) {
+        pageNum = parseInt(page as string);
+    }
+    if (limit) {
+        limitNum = parseInt(limit as string);
+    }
+    const response = await fighterModel.searchFighter(req.url, name, pageNum, limitNum);
+    if (response) {
+        res.render("fighters", {fighters: response.rows, page:pageNum, limit:limitNum, url:req.baseUrl, search:true, name:name});
+    }
+    else {
+        res.render("error");
+        res.status(400).send({ message: "Get fighters query error"});
+    }
+}
+
+export default {getFighters, getOneFighter, searchFighter};

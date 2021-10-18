@@ -1,3 +1,8 @@
+if (search)
+    - var nextUrl = `${url}/fighter/${name}/search`
+else
+    - var nextUrl = `${url}/fighter`
+
 html
     head
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
@@ -21,22 +26,22 @@ html
             ul.pagination.justify-content-center
                 if (page === 1)
                     li.page-item.active
-                        a.page-link(href=`${url}/fighter/?page=${page}&limit=${limit}`) #{page}
+                        a.page-link(href=`${nextUrl}/?page=${page}&limit=${limit}`) #{page}
                     li.page-item
-                        a.page-link(href=`${url}/fighter/?page=${page+1}&limit=${limit}`) #{page+1}
+                        a.page-link(href=`${nextUrl}/?page=${page+1}&limit=${limit}`) #{page+1}
                     li.page-item
-                        a.page-link(href=`${url}/fighter/?page=${page+1}&limit=${limit}`) Next
+                        a.page-link(href=`${nextUrl}/?page=${page+1}&limit=${limit}`) Next
                 else
                     li.page-item
-                        a.page-link(href=`${url}/fighter/?page=${page-1}&limit=${limit}`) Previous
+                        a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) Previous
                     li.page-item
-                        a.page-link(href=`${url}/fighter/?page=${page-1}&limit=${limit}`) #{page-1}
+                        a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) #{page-1}
                     li.page-item.active
-                        a.page-link(href=`${url}/fighter/?page=${page}&limit=${limit}`) #{page}
+                        a.page-link(href=`${nextUrl}/?page=${page}&limit=${limit}`) #{page}
                     li.page-item
-                        a.page-link(href=`${url}/fighter/?page=${page+1}&limit=${limit}`) #{page+1}
+                        a.page-link(href=`${nextUrl}/?page=${page+1}&limit=${limit}`) #{page+1}
                     li.page-item
-                        a.page-link(href=`${url}/fighter/?page=${page+1}&limit=${limit}`) Next
+                        a.page-link(href=`${nextUrl}/?page=${page+1}&limit=${limit}`) Next
     else
         div.container
             h1 SaltyBet Fighters
@@ -44,15 +49,15 @@ html
         nav(aria-label='Page navigation')
             ul.pagination.justify-content-center
                 li.page-item
-                    a.page-link(href=`${url}/fighter/?page=${page-1}&limit=${limit}`) Previous
+                    a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) Previous
                 li.page-item
-                    a.page-link(href=`${url}/fighter/?page=1&limit=${limit}`) Page 1
+                    a.page-link(href=`${nextUrl}/?page=1&limit=${limit}`) Page 1
     footer.footer
         div.container
             span
                 | Items per page: 
-                a(href=`${url}/fighter/?page=${page}&limit=10`) 10   
-                a(href=`${url}/fighter/?page=${page}&limit=50`) 50   
-                a(href=`${url}/fighter/?page=${page}&limit=100`) 100    
+                a(href=`${nextUrl}/?page=${page}&limit=10`) 10   
+                a(href=`${nextUrl}/?page=${page}&limit=50`) 50   
+                a(href=`${nextUrl}/?page=${page}&limit=100`) 100    
             
         

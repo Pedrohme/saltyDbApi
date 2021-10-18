@@ -74,8 +74,17 @@ async function updateFighter(req:Request, res:Response) {
 }
 
 async function searchFighter(req:Request, res:Response) {
+    const { page, limit } = req.query;
     const { name } = req.params;
-    const response = await fighterModel.searchFighter(req.url, name);
+    let pageNum = 1;
+    let limitNum = 10;
+    if (page) {
+        pageNum = parseInt(page as string);
+    }
+    if (limit) {
+        limitNum = parseInt(limit as string);
+    }
+    const response = await fighterModel.searchFighter(req.url, name as string, pageNum, limitNum);
     if (response && response.rowCount > 0) {
         console.log("Query successful", response.rows);
         res.status(200).send({

@@ -8,7 +8,7 @@ router.get('/fighter/:name', fighterController.getOneFighter);
 
 router.get('/fighter', fighterController.getFighters);
 
-router.get('/fighter/search/:name', fighterController.searchFighter);
+router.get('/fighter/:name/search/', fighterController.searchFighter);
 
 router.post('/fighter', loginController.verifyJWT, fighterController.insertFighter);
 
