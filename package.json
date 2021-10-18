@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node .",
-    "build": "npx tsc && cp -r ./src/bin ./dist/bin",
+    "build": "rm -rf ./dist && npx tsc && cp -rf ./src/bin ./dist/bin && cp -rf ./src/views ./dist/views",
     "postinstall": "npm run build"
   },
   "author": "Pedrohme",
@@ -22,6 +22,7 @@
     "@types/jsonwebtoken": "^8.5.5",
     "@types/node": "^16.11.0",
     "@types/pg": "^8.6.1",
+    "@types/pug": "^2.0.5",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",
@@ -41,6 +42,7 @@
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
     "node-cache": "^5.1.2",
-    "pg": "^8.7.1"
+    "pg": "^8.7.1",
+    "pug": "^3.0.2"
   }
 }
