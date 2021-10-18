@@ -24,5 +24,5 @@ form.addEventListener("submit", (event) => {
     event.preventDefault();
     const searchbox = document.querySelector("#searchbox");
     const newUrl = `${window.location.origin}/fighter/${searchbox.value}/search`;
-    window.location.replace(newUrl);
+    window.location = newUrl;
 })
