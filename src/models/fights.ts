@@ -5,7 +5,7 @@ import { QueryResult } from "pg";
 const cache = new nCache({ stdTTL: 10, checkperiod: 2, useClones: false });
 
 const insertFightQuery = "INSERT INTO fights(fightera, fighterb, winner) VALUES($1, $2, $3)";
-const selectFightsBothQuery = "SELECT fightera, fighterb, winner, to_char(timestamp, 'YYYY/MM/DD') AS timestamp FROM fights WHERE fightera = $1 AND fighterb = $2";
+const selectFightsBothQuery = "SELECT fightera, fighterb, winner, to_char(timestamp, 'YYYY/MM/DD') AS timestamp FROM fights WHERE (fightera = $1 AND fighterb = $2) OR (fightera = $2 AND fighterb = $1)";
 const selectFightsOneQuery = "SELECT fightera, fighterb, winner, to_char(timestamp, 'YYYY/MM/DD') AS timestamp FROM fights WHERE fightera = $1 OR fighterb = $1"
 const selectFightsQuery = "SELECT fightera, fighterb, winner, to_char(timestamp, 'YYYY/MM/DD') AS timestamp FROM fights ORDER BY id DESC OFFSET $1 LIMIT $2";
 
