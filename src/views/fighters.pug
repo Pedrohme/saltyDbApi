@@ -62,13 +62,23 @@ html
                             a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) Previous
                         li.page-item
                             a.page-link(href=`${nextUrl}/?page=1&limit=${limit}`) Page 1
-            footer.footer
-                div.container
-                    span
-                        | Items per page: 
-                        a(href=`${nextUrl}/?page=${page}&limit=10`) 10   
-                        a(href=`${nextUrl}/?page=${page}&limit=50`) 50   
-                        a(href=`${nextUrl}/?page=${page}&limit=100`) 100    
+        div.text-lg-start.text-center
+            section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom
+                div.me-5.d-none.d-lg-block
+                    | Items per page: 
+                    a(href=`${nextUrl}/?page=${page}&limit=10`) 10   
+                    a(href=`${nextUrl}/?page=${page}&limit=50`) 50   
+                    a(href=`${nextUrl}/?page=${page}&limit=100`) 100    
+        footer.footer.bg-light.text-lg-start.text-center.fixed-bottom
+            section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom 
+                div.me-5.d-none.d-lg-block
+                    span This website was made as a little personal project so i could learn typescript.
+                div 
+                    | Contact and source code:
+                    |  
+                    a.fab(href="https://github.com/Pedrohme/saltyDbApi") Github
+
+
     script(src="/scripts/scripts.js")
             
         
