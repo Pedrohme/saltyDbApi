@@ -15,6 +15,26 @@ html
                     div.col-xs-2(style=" color: #04850f") wins: #{fighter.wins}
                     div.col-xs-3(style=" color: #e30e1f") losses: #{fighter.losses}
                     div.col-xs-4 winrate: #{fighter.wins/(fighter.wins+fighter.losses)*100}%
+        if (fights.length)
+            br
+            div.container
+                h3  Past fights
+                ul.list-group
+                each fight in fights
+                    br
+                    li.list-group-item
+                        div.col-xs-1 
+                            strong VERSUS #{fight.timestamp}
+                            if (fight.fightera === fighter.name)
+                                a.page-link(href=`${url}/fighter/${fight.fighterb}`)
+                                    strong #{fight.fighterb} 
+                            else
+                                a.page-link(href=`${url}/fighter/${fight.fightera}`)
+                                    strong #{fight.fightera} 
+                        if (fight.winner === fighter.name)
+                            div.col-xs-2(style=" color: #04850f") WON
+                        else
+                            div.col-xs-2(style=" color: #e30e1f") LOST
     else
         div.container.justify-content-center.mx-auto.text-center
             h1 SaltyBet Fighters

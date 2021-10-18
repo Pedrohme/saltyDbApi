@@ -1,4 +1,5 @@
 import fighterModel from "../models/fighter";
+import fightsModel from "../models/fights";
 import { Request, Response } from "express";
 
 async function getFighters(req:Request, res:Response) {
@@ -23,11 +24,12 @@ async function getFighters(req:Request, res:Response) {
 
 async function getOneFighter(req:Request, res:Response) {
     const { name } = req.params;
-    const response = await fighterModel.getOneFighter(req.url, name);
-    if (response && response.rowCount > 0) {
-        res.render("fighter", {fighter: response.rows[0], url:req.baseUrl});
+    const responseFighter = await fighterModel.getOneFighter(req.url, name);
+    const responseFights = await fightsModel.getFightsOne(req.url, name);
+    if (responseFighter && responseFighter.rowCount > 0) {
+        res.render("fighter", {fighter: responseFighter.rows[0], fights:responseFights?.rows, url:req.baseUrl});
     }
-    else if (response) {
+    else if (responseFighter) {
         res.render("fighter", {fighter: null, url:req.baseUrl});
     }
     else {
