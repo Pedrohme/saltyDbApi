@@ -9,7 +9,7 @@
 
 <br />
 
-This is the web api for the databased used in https://github.com/Pedrohme/saltyBot  
+This is the web api for the database used in https://github.com/Pedrohme/saltyBot  
 They are made to be run together. one won't work (completely) without the other.  
 This api manages a database with information about fighters and fights from the website https://www.saltybet.com/  
 
@@ -28,7 +28,7 @@ At the time of writing, the website was online at https://saltybot-api-pedrohme.
 
 ### **GET /api/fighter/:name**
 Gets a fighter by name, exact match, case sensitive.  
-Rsponse if OK:  
+Response if OK:  
 JSON:
 ```json
 {
@@ -44,7 +44,7 @@ JSON:
 <br />
 
 ### **GET /api/fighter/?page=X&limit=Y**
-Gets fighters in the order they were inserted in the database, with pagination.
+Gets fighters in the order they were inserted in the database, with pagination.  
 Rsponse if OK:  
 JSON:
 ```json
@@ -164,7 +164,7 @@ JSON:
 <br />
 
 ### **GET /api/fights/both/?fightera=X&fighterb=Y**
-Gets all fights where fightera and fighterb fought agains each other.
+Gets all fights where fightera and fighterb fought agains each other.  
 Response if OK:  
 JSON:
 ```json
