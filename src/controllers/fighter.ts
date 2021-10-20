@@ -2,35 +2,22 @@ import fighterModel from "../models/fighter";
 import fightsModel from "../models/fights";
 import { Request, Response } from "express";
 
-async function getFighters(req:Request, res:Response) {
-    const { page, limit } = req.query;
-    let pageNum = 1;
-    let limitNum = 10;
-    if (page) {
-        pageNum = parseInt(page as string);
-    }
-    if (limit) {
-        limitNum = parseInt(limit as string);
-    }
-    const response = await fighterModel.getFighters(req.url, pageNum, limitNum);
-    if (response) {
-        res.render("fighters", {fighters: response.rows, page:pageNum, limit:limitNum, url:req.baseUrl});
-    }
-    else {
-        res.render("error");
-        res.status(400).send({ message: "Get fighters query error"});
-    }
-}
 
 async function getOneFighter(req:Request, res:Response) {
-    const { name } = req.params;
-    const responseFighter = await fighterModel.getOneFighter(req.url, name);
-    const responseFights = await fightsModel.getFightsOne(req.url, name);
-    if (responseFighter && responseFighter.rowCount > 0) {
-        res.render("fighter", {fighter: responseFighter.rows[0], fights:responseFights?.rows, url:req.baseUrl});
-    }
-    else if (responseFighter) {
-        res.render("fighter", {fighter: null, url:req.baseUrl});
+    const { name, tier, limit, page } = req.query;
+    if (typeof name === 'string' && typeof tier === 'string') {
+        const responseFighter = await fighterModel.getOneFighter(req.url, name, tier);
+        if (responseFighter) {
+            let lim:number|undefined = undefined;
+            let pag:string|undefined = undefined;
+            if (limit) lim = Number(limit);
+            if (typeof page === 'string') pag = page;
+            const responseFights = await fightsModel.getFightsOne(req.url, name, tier, lim, pag);
+            res.render("fighter", {fighter: responseFighter.data, fights:responseFights?.data, url:req.baseUrl, before:responseFights?.before, after:responseFights?.after});
+        }
+        else {
+            res.render("fighter", {fighter: null, url:req.baseUrl});
+        }
     }
     else {
         res.render("error");
@@ -39,24 +26,23 @@ async function getOneFighter(req:Request, res:Response) {
 }
 
 async function searchFighter(req:Request, res:Response) {
-    const { page, limit } = req.query;
-    const { name } = req.params;
-    let pageNum = 1;
-    let limitNum = 10;
-    if (page) {
-        pageNum = parseInt(page as string);
-    }
-    if (limit) {
-        limitNum = parseInt(limit as string);
-    }
-    const response = await fighterModel.searchFighter(req.url, name, pageNum, limitNum);
-    if (response) {
-        res.render("fighters", {fighters: response.rows, page:pageNum, limit:limitNum, url:req.baseUrl, search:true, name:name});
-    }
-    else {
-        res.render("error");
-        res.status(400).send({ message: "Get fighters query error"});
+    const { page, limit, name } = req.query;
+
+    if(typeof name === 'string') {
+        let lim:number|undefined = undefined;
+        let pag:string|undefined = undefined;
+        if (limit) lim = Number(limit);
+        if (typeof page === 'string') pag = page;
+
+        const response = await fighterModel.searchFighter(req.url, name, lim, pag);
+        if (response) {
+            res.render("fighters", {fighters: response.data, url:req.baseUrl, before:response.before, after:response.after, name: name, page: pag});
+        }
+        else {
+            res.render("error");
+            res.status(400).send({ message: "Get fighters query error"});
+        }
     }
 }
 
-export default {getFighters, getOneFighter, searchFighter};
+export default {getOneFighter, searchFighter};

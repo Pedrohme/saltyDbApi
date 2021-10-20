@@ -1,7 +1,4 @@
-if (search)
-    - var nextUrl = `${url}/fighter/${name}/search`
-else
-    - var nextUrl = `${url}/fighter`
+- var nextUrl = `${url}/fighter/search`
 
 html
     head
@@ -27,48 +24,35 @@ html
                     each fighter in fighters 
                         li.list-group-item
                             div.col-xs-1 
-                                a.page-link(href=`${url}/fighter/${fighter.name}`)
-                                    strong #{fighter.name}
-                            div.col-xs-2(style=" color: #04850f") wins: #{fighter.wins}
-                            div.col-xs-3(style=" color: #e30e1f") losses: #{fighter.losses}
-                            div.col-xs-4 winrate: #{fighter.wins/(fighter.wins+fighter.losses)*100}%
+                                a.page-link(href=`${url}/fighter/?name=${fighter.data.name}&tier=${fighter.data.tier}`)
+                                    strong #{fighter.data.name}
+                            div.col-xs-2 tier: #{fighter.data.tier}
+                            div.col-xs-3(style=" color: #04850f") wins: #{fighter.data.wins}
+                            div.col-xs-4(style=" color: #e30e1f") losses: #{fighter.data.losses}
+                            div.col-xs-5 winrate: #{fighter.data.wins/(fighter.data.wins+fighter.data.losses)*100}%
             nav(aria-label='Page navigation')
                 ul.pagination.justify-content-center
-                    if (page === 1)
-                        li.page-item.active
-                            a.page-link(href=`${nextUrl}/?page=${page}&limit=${limit}`) #{page}
+                    if (before)
                         li.page-item
-                            a.page-link(href=`${nextUrl}/?page=${page+1}&limit=${limit}`) #{page+1}
+                            a.page-link(href=`${nextUrl}/?name=${name}&page=${before}&limit=${limit}`) Previous
+                    if (after)
                         li.page-item
-                            a.page-link(href=`${nextUrl}/?page=${page+1}&limit=${limit}`) Next
-                    else
-                        li.page-item
-                            a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) Previous
-                        li.page-item
-                            a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) #{page-1}
-                        li.page-item.active
-                            a.page-link(href=`${nextUrl}/?page=${page}&limit=${limit}`) #{page}
-                        li.page-item
-                            a.page-link(href=`${nextUrl}/?page=${page+1}&limit=${limit}`) #{page+1}
-                        li.page-item
-                            a.page-link(href=`${nextUrl}/?page=${page+1}&limit=${limit}`) Next
+                            a.page-link(href=`${nextUrl}/?name=${name}&page=${after}&limit=${limit}`) Next
+            div.text-lg-start.text-center
+                section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom
+                    div.me-5.d-none.d-lg-block
+                        | Items per page: 
+                        if(page)
+                            a(href=`${nextUrl}/?name=${name}&page=${page}&limit=10`) 10   
+                            a(href=`${nextUrl}/?name=${name}&page=${page}&limit=50`) 50   
+                            a(href=`${nextUrl}/?name=${name}&page=${page}&limit=100`) 100    
+                        else
+                            a(href=`${nextUrl}/?name=${name}&limit=10`) 10   
+                            a(href=`${nextUrl}/?name=${name}&limit=50`) 50   
+                            a(href=`${nextUrl}/?name=${name}&limit=100`) 100    
         else
             div.container
                 h2 No fighters found
-            if (!search)
-                nav(aria-label='Page navigation')
-                    ul.pagination.justify-content-center
-                        li.page-item
-                            a.page-link(href=`${nextUrl}/?page=${page-1}&limit=${limit}`) Previous
-                        li.page-item
-                            a.page-link(href=`${nextUrl}/?page=1&limit=${limit}`) Page 1
-        div.text-lg-start.text-center
-            section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom
-                div.me-5.d-none.d-lg-block
-                    | Items per page: 
-                    a(href=`${nextUrl}/?page=${page}&limit=10`) 10   
-                    a(href=`${nextUrl}/?page=${page}&limit=50`) 50   
-                    a(href=`${nextUrl}/?page=${page}&limit=100`) 100    
         footer.footer.bg-light.text-lg-start.text-center.fixed-bottom
             section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom 
                 div.me-5.d-none.d-lg-block

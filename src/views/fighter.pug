@@ -1,3 +1,5 @@
+- var nextUrl = `${url}/fighter/`
+
 html
     head
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
@@ -22,6 +24,7 @@ html
                     li.list-group-item
                         div.col-xs-1 
                             strong #{fighter.name}
+                        div.col-xs-2 tier: #{fighter.tier}
                         div.col-xs-2(style=" color: #04850f") wins: #{fighter.wins}
                         div.col-xs-3(style=" color: #e30e1f") losses: #{fighter.losses}
                         div.col-xs-4 winrate: #{fighter.wins/(fighter.wins+fighter.losses)*100}%
@@ -34,17 +37,29 @@ html
                         br
                         li.list-group-item
                             div.col-xs-1 
-                                strong VERSUS #{fight.timestamp}
-                                if (fight.fightera === fighter.name)
-                                    a.page-link(href=`${url}/fighter/${fight.fighterb}`)
-                                        strong #{fight.fighterb} 
+                                strong VERSUS #{fight.data.timestamp}
+                                if (fight.data.fightera === fighter.name)
+                                    a.page-link(href=`${url}/fighter/?name=${fight.data.fighterb}&tier=${fight.data.tier}`)
+                                        strong #{fight.data.fighterb} 
                                 else
-                                    a.page-link(href=`${url}/fighter/${fight.fightera}`)
-                                        strong #{fight.fightera} 
-                            if (fight.winner === fighter.name)
+                                    a.page-link(href=`${url}/fighter/?name=${fight.data.fightera}&tier=${fight.data.tier}`)
+                                        strong #{fight.data.fightera} 
+                            if (fight.data.winner === fighter.name)
                                 div.col-xs-2(style=" color: #04850f") WON
                             else
                                 div.col-xs-2(style=" color: #e30e1f") LOST
+                div.text-lg-start.text-center
+                section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom
+                    div.me-5.d-none.d-lg-block
+                        | Items per page: 
+                        if(page)
+                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&page=${page}&limit=10`) 10   
+                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&page=${page}&limit=50`) 50   
+                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&page=${page}&limit=100`) 100    
+                        else
+                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&limit=10`) 10   
+                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&limit=50`) 50   
+                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&limit=100`) 100    
         else
             div.container.justify-content-center.mx-auto.text-center
                 h2 Fighter not found

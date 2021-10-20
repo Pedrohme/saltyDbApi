@@ -4,20 +4,20 @@ import nCache from "node-cache";
 const tiers = ["P", "B", "A", "S", "X"];
 const limitValues = [10, 50, 100];
 
-interface Fighter {
+export interface Fighter {
     name:string;
     tier:string;
     wins:number;
     losses:number;
 }
 
-interface FighterElement {
+export interface FighterElement {
     ref:string;
     ts:number;
     data:Fighter; 
 }
 
-interface SearchByNameResult {
+export interface SearchByNameResult {
     before:any;
     after:any;
     data: Array<FighterElement>;
