@@ -1,19 +1,9 @@
-import {Pool} from "pg";
+import fauna from "faunadb";
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
-});
+export const client = new fauna.Client({
+    secret: process.env.FAUNA_SECRET as string,
+    domain: process.env.FAUNA_DOMAIN as string
+})
+export const q = fauna.query;
 
-async function query(query:string, values:(string|number)[]) {
-    try {
-        const res = await pool.query(query, values);
-        return res
-    }
-    catch (err) {
-        if (err instanceof Error) console.log(err.message);
-        return null;
-    }
-}
-
-export default {query};
+export default {client, q};
