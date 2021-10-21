@@ -82,6 +82,7 @@ Body:
 Key | Value
 --- | ---
 name | fightername:string
+tier | tier:string
 
 <br />
 
