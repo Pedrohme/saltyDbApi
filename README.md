@@ -15,7 +15,7 @@ This api manages a database with information about fighters and fights from the 
 
 <br />
 
-At the time of writing, the website was online at https://saltybot-api-pedrohme.herokuapp.com/
+At the time of writing, the website was online at https://saltybot-api-pedrohme.herokuapp.com/ (with most features disabled, because free databases don't allow many read/write operations per month)
 
 <br />
 <br />
@@ -26,16 +26,16 @@ At the time of writing, the website was online at https://saltybot-api-pedrohme.
 
 <br />
 
-### **GET /api/fighter/:name**
-Gets a fighter by name, exact match, case sensitive.  
+### **GET /api/fighter/?name=X&tier=Y**
+Gets a fighter by name and tier, exact match, case sensitive.  
 Response if OK:  
-JSON:
+JSON:  
 ```json
 {
     "message": "${fighter} found",
     "data": {
-        "id": number,
         "name": string,
+        "tier": string,
         "wins": number,
         "losses": number
     }
@@ -43,39 +43,25 @@ JSON:
 ```
 <br />
 
-### **GET /api/fighter/?page=X&limit=Y**
-Gets fighters in the order they were inserted in the database, with pagination.  
-Rsponse if OK:  
-JSON:
-```json
-{
-    "data": [
-        {
-            "id": number,
-            "name": string,
-            "wins": number,
-            "losses": number
-        },
-        ...
-        
-    ]
-}
-```
-
-<br />
-
-### **GET /api/fighter/:name/search/**
+### **GET /api/fighter/search/?name=X&page=(faunadb Ref().id)&previous=(true/false)**
 Gets all fighters that include the passed string in their name, case insensitive.  
-Response if OK:  
-JSON:
+Returns 64 values max. Has pagination with "page" and "previous" parameters.  
+Rsponse if OK:  
+JSON:  
 ```json
 {
+    "after" (optional): faunadb Ref(),
+    "before" (optional): faunadb Ref(),
     "data": [
         {
-            "id": number,
-            "name": string,
-            "wins": number,
-            "losses": number
+            "ref": faunadb Ref(),
+            "ts": timestamp,
+            "data": {
+                "name": string,
+                "tier": string,
+                "wins": number,
+                "losses": number
+            }
         },
         ...
         
@@ -111,6 +97,7 @@ Body:
 Key | Value
 --- | ---
 name | fightername:string
+tier | tier:string
 wins | 0 or 1
 losses | 0 or 1
 
@@ -120,64 +107,56 @@ losses | 0 or 1
 
 <br />
 
-### **GET /api/fights/:fighter**
-Gets all fights from a fighter by name, exact match, case sensitive.  
+### **GET /api/fights/?name=X&tier=Y&page=(faunadb Ref().id)&previous=(true/false)**
+Gets all fights from a fighter by name and tier, exact match, case sensitive.  
+Returns 64 values max. Has pagination with "page" and "previous" parameters.  
 Response if OK:  
 JSON:
 ```json
 {
+    "after" (optional): faunadb Ref(),
+    "before" (optional): faunadb Ref(),
     "data": [
         {
-            "fightera": string,
-            "fighterb": string,
-            "winner": string,
-            "timestamp": YYYY/MM/DD
+            "ref": faunadb Ref(),
+            "ts": timestamp,
+            "data": {
+                "tier": string,
+                "fightera": string,
+                "fighterb": string,
+                "winner": string,
+                "timestamp": YYYY/MM/DD
+            }
         },
         ...
-        
     ]
 }
 ```
 
 <br />
 
-### **GET /api/fights/?page=X&limit=Y**
-Gets fights in the order they were inserted in the database (recent fights first), with pagination.  
+### **GET /api/fights/both/?fightera=A&fighterb=B&tier=X&page=(faunadb Ref().id)&previous=(true/false)**
+Gets all fights where fightera and fighterb fought against each other.  
+Returns 64 values max. Has pagination with "page" and "previous" parameters.  
 Response if OK:  
 JSON:
 ```json
 {
+    "after" (optional): faunadb Ref(),
+    "before" (optional): faunadb Ref(),
     "data": [
         {
-            "fightera": string,
-            "fighterb": string,
-            "winner": string,
-            "timestamp": YYYY/MM/DD
+            "ref": faunadb Ref(),
+            "ts": timestamp,
+            "data": {
+                "tier": string,
+                "fightera": string,
+                "fighterb": string,
+                "winner": string,
+                "timestamp": YYYY/MM/DD
+            }
         },
         ...
-        
-    ]
-}
-```
-
-
-<br />
-
-### **GET /api/fights/both/?fightera=X&fighterb=Y**
-Gets all fights where fightera and fighterb fought agains each other.  
-Response if OK:  
-JSON:
-```json
-{
-    "data": [
-        {
-            "fightera": string,
-            "fighterb": string,
-            "winner": string,
-            "timestamp": YYYY/MM/DD
-        },
-        ...
-        
     ]
 }
 ```
@@ -194,6 +173,7 @@ x-access-token | JWT token
 Body:
 Key | Value
 --- | ---
+tier | tier:string
 fightera | fightername:string
 fighterb | fightername:string
 winner | fightername:string
