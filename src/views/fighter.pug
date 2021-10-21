@@ -1,3 +1,5 @@
+- var nextUrl = `${url}/fighter/`
+
 html
     head
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
@@ -22,6 +24,7 @@ html
                     li.list-group-item
                         div.col-xs-1 
                             strong #{fighter.name}
+                        div.col-xs-2 tier: #{fighter.tier}
                         div.col-xs-2(style=" color: #04850f") wins: #{fighter.wins}
                         div.col-xs-3(style=" color: #e30e1f") losses: #{fighter.losses}
                         div.col-xs-4 winrate: #{fighter.wins/(fighter.wins+fighter.losses)*100}%
@@ -30,21 +33,29 @@ html
                 div.container
                     h3  Past fights
                     ul.list-group
-                    each fight in fights
-                        br
-                        li.list-group-item
-                            div.col-xs-1 
-                                strong VERSUS #{fight.timestamp}
-                                if (fight.fightera === fighter.name)
-                                    a.page-link(href=`${url}/fighter/${fight.fighterb}`)
-                                        strong #{fight.fighterb} 
+                        each fight in fights
+                            br
+                            li.list-group-item
+                                div.col-xs-1 
+                                    strong VERSUS #{fight.data.timestamp}
+                                    if (fight.data.fightera === fighter.name)
+                                        a.page-link(href=`${url}/fighter/?name=${fight.data.fighterb}&tier=${fight.data.tier}`)
+                                            strong #{fight.data.fighterb} 
+                                    else
+                                        a.page-link(href=`${url}/fighter/?name=${fight.data.fightera}&tier=${fight.data.tier}`)
+                                            strong #{fight.data.fightera} 
+                                if (fight.data.winner === fighter.name)
+                                    div.col-xs-2(style=" color: #04850f") WON
                                 else
-                                    a.page-link(href=`${url}/fighter/${fight.fightera}`)
-                                        strong #{fight.fightera} 
-                            if (fight.winner === fighter.name)
-                                div.col-xs-2(style=" color: #04850f") WON
-                            else
-                                div.col-xs-2(style=" color: #e30e1f") LOST
+                                    div.col-xs-2(style=" color: #e30e1f") LOST
+                nav(aria-label='Page navigation')
+                ul.pagination.justify-content-center
+                    if (before)
+                        li.page-item
+                            a.page-link(href=`${nextUrl}/?name=${name}&tier=${tier}&page=${before[0].id}&previous=true`) Previous
+                    if (after)
+                        li.page-item
+                            a.page-link(href=`${nextUrl}/?name=${name}&tier=${tier}&page=${after[0].id}&previous=false`) Next
         else
             div.container.justify-content-center.mx-auto.text-center
                 h2 Fighter not found

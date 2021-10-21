@@ -3,10 +3,8 @@ import fighterController from "../controllers/fighter";
 
 const router = express();
 
-router.get('/fighter/:name', fighterController.getOneFighter);
+router.get('/fighter/', fighterController.getOneFighter);
 
-router.get('/fighter/', fighterController.getFighters);
-
-router.get('/fighter/:name/search', fighterController.searchFighter);
+router.get('/fighter/search', fighterController.searchFighter);
 
 export default {router};

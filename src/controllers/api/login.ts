@@ -1,19 +1,44 @@
-import db from "../../db/db";
+import {client, q} from "../../db/db";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import {Request, Response, NextFunction} from "express";
 
-const getAdminQuery = "SELECT * FROM admins WHERE name = $1";
+interface Admin {
+    name:string;
+    password:string;
+}
+
+interface AdminElement {
+    ref:string;
+    ts:number;
+    data:Admin; 
+}
 
 async function generateJWT(req:Request, res:Response) {
-    const {user, password} = req.body;
-        
-    const response = await db.query(getAdminQuery, [user]);
+    const {name, password} = req.body;
+    
+    let response:any;
+    try {
+        const result = await client.query(
+            q.Get(
+                q.Match(
+                    q.Index("get_admin"),
+                    name,
+                )
+            )
+        );
+        response = result as AdminElement;
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log(error);
+        }
+        res.status(500).send({message: 'database error'});
+    }
 
-    if (response && response.rowCount > 0) {
-        const match = await bcrypt.compare(password, response?.rows[0]["password"]);
+    if (response) {
+        const match = await bcrypt.compare(password, response.data.password);
         if (match) {
-            const id = response.rows[0]["id"];
+            const id = response.ref.id;
             jwt.sign({id}, (<Secret>process.env.JWT_SECRET), {expiresIn: "30d"}, function(err, token) {
                 if (err) {
                     return res.status(500).send({ message: 'Failed to generate token'});

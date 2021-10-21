@@ -1,73 +1,192 @@
-import db from "../db/db";
+import {client, q} from "../db/db";
 import nCache from "node-cache";
-import { QueryResult } from "pg";
+
+const tiers = ["P", "B", "A", "S", "X"];
+const limitValues = [64];
+
+export interface Fighter {
+    name:string;
+    tier:string;
+    wins:number;
+    losses:number;
+}
+
+export interface FighterElement {
+    ref:string;
+    ts:number;
+    data:Fighter; 
+}
+
+export interface SearchByNameResult {
+    before:any;
+    after:any;
+    data: Array<FighterElement>;
+}
+
 
 const cache = new nCache({ stdTTL: 10, checkperiod: 2, useClones: false });
 
-const selectOneFighterQuery = "SELECT * FROM fighter WHERE name = $1";
-const selectFightersQuery = "SELECT * FROM fighter OFFSET $1 LIMIT $2";
-const insertFighterQuery = "INSERT INTO fighter(name, wins, losses) VALUES($1, $2, $3)";
-const updateFighterQuery = "UPDATE fighter SET wins = wins+$1, losses = losses+$2 WHERE name = $3";
-const searchFighterQuery = "SELECT * FROM fighter WHERE name ILIKE ('%' || $1 || '%') OFFSET $2 LIMIT $3";
-
-async function insertFighter(name:string) {
-    const response = await db.query(insertFighterQuery, [name, 0, 0]);
-    if (response) {
-        return response;
+async function insertFighter(name:string, tier:string) {
+    if (name.length <= 64 && tiers.includes(tier)) {
+        try {
+            const result = await client.query(
+                q.Create(
+                    q.Collection("fighter"),
+                    {
+                        data: {
+                            name: name,
+                            tier: tier,
+                            wins: 0,
+                            losses: 0
+                        }
+                    }
+                )
+            );
+            const res = result as FighterElement;
+            return res;
+        } 
+        catch (error) {
+            if (error instanceof Error) {
+                console.log(error);
+            }
+        }
     }
-    else {
-        return null;
-    }
+    return null;
 }
 
-async function getFighters(url:string, page = 1, limit = 10) {
-    page = (page-1) * limit;
-
-    const cacheKey = "__cache__" + url;
-    const value = await cache.get(cacheKey);
-    if (value) {
-        console.log("hit cache");
-        return value as QueryResult;
+async function getOneFighter(url:string, name:string, tier:string) {
+    if (name.length <= 64 && tiers.includes(tier)) {
+        const cacheKey = "__cache__" + url;
+        const value = await cache.get(cacheKey);
+        if (value) {
+            console.log("hit cache");
+            return value as FighterElement;
+        }
+        try {
+            const result = await client.query(
+                q.Get(
+                    q.Match(
+                        q.Index("get_fighter"),
+                        name,
+                        tier
+                    )
+                )
+            );
+            const res = result as FighterElement;
+            cache.set(cacheKey, res);
+            return res;
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log(error);
+            }
+        }
     }
-    const response = await db.query(selectFightersQuery, [page, limit]);
-    cache.set(cacheKey, response); 
-    return response;
+    return null;
 }
 
-async function getOneFighter(url:string, name:string) {
-    const cacheKey = "__cache__" + url;
-    const value = await cache.get(cacheKey);
-    if (value) {
-        console.log("hit cache");
-        return value as QueryResult;
+async function updateFighter(wins:number, losses:number, name:string, tier:string) {
+    if (name.length <= 64 && tiers.includes(tier) && ((wins === 1 && losses === 0) || (wins === 0 && losses === 1))) {
+        try {
+            const getResult = await client.query(
+                q.Get(
+                    q.Match(
+                        q.Index("get_fighter"),
+                        name,
+                        tier
+                    )
+                )
+            );
+            const getRes = getResult as FighterElement;
+            const result = await client.query(
+                q.Update(
+                    getRes.ref,
+                    {
+                        data: {
+                            wins: getRes.data.wins+wins,
+                            losses: getRes.data.losses+losses
+                        }
+                    }
+                )  
+            );
+            const res = result as FighterElement;
+            return res;
+        } 
+        catch (error) {
+            if (error instanceof Error) {
+                console.log(error);
+            }
+        }
     }
-    const response = await db.query(selectOneFighterQuery, [name]);
-    cache.set(cacheKey, response); 
-    return response;
+    return null;
 }
 
-async function updateFighter(wins:number, losses:number, name:string) {
-    const response = await db.query(updateFighterQuery, [wins, losses, name]);
-    if (response) {
-        return response;
+async function searchFighter(url:string, name:string, limit = 64, page?:string, previous = false) {
+    if (name.length <= 64 && limitValues.includes(limit)) {
+        const cacheKey = "__cache__" + url;
+        const value = await cache.get(cacheKey);
+        if (value) {
+            console.log("hit cache");
+            return value as SearchByNameResult;
+        }
+
+        
+        const pageOptions: {[k:string]: any} = {};
+        if (limit) {
+            pageOptions.size = limit;
+        }
+        if(page) {
+            if (previous) {
+                pageOptions.before = [page];
+            }
+            else {
+                pageOptions.after = [page];
+            }
+        }
+
+        try {
+            const result = await client.query(
+                q.Map(
+                    q.Filter(
+                        q.Paginate(
+                            q.Match(
+                                q.Index("all_fighters")
+                            ),
+                            pageOptions
+                        ),
+                        q.Lambda(
+                            "fighterRef",
+                            q.ContainsStr(
+                                q.LowerCase(
+                                    q.Select(
+                                        ["data", "name"],
+                                        q.Get(
+                                            q.Var("fighterRef")
+                                        )
+                                    )
+                                ), 
+                                name
+                            )
+                        )
+                    ),
+                    q.Lambda(
+                        "fighterRef",
+                        q.Get(
+                            q.Var("fighterRef")
+                        )
+                    )
+                )
+            );
+            const res = result as SearchByNameResult;
+            cache.set(cacheKey, res);
+            return res;
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                console.log(error);
+            }
+        }
     }
-    else {
-        return null;
-    }
+    return null;
 }
 
-async function searchFighter(url:string, name:string, page = 1, limit = 10) {
-    page = (page-1) * limit;
-
-    const cacheKey = "__cache__" + url;
-    const value = await cache.get(cacheKey);
-    if (value) {
-        console.log("hit cache");
-        return value as QueryResult;
-    }
-    const response = await db.query(searchFighterQuery, [name, page, limit]);
-    cache.set(cacheKey, response); 
-    return response;
-}
-
-export default {insertFighter, getFighters, getOneFighter, updateFighter, searchFighter};
+export default {insertFighter, getOneFighter, updateFighter, searchFighter};

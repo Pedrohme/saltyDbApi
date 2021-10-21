@@ -8,30 +8,26 @@ html
     head
     body
         div.d-flex#wrapper
-            div.border-end.bg-white#sidebar-wrapper
-                div.sidebar-heading.border-bottom.bg-light SaltyDB
-                div.list-group.list-group-flush
-                    a.list-group-item.list-group-item-action.list-group-item-light.p-3(href=`/fighter`) Fighters
             div#page-content-wrapper
                 nav.navbar.navbar-expand-lg.navbar-light.bg-light.border-bottom
                     div.container-fluid
-                        button.btn.btn-primary#sidebarToggle Toggle Menu
+                        strong Salty Database
                         div.navbar-collapse#navbarSupportedContent
                             ul.navbar-nav.ms-auto.mt-2.mt-lg-0
                                 form.input-group#search
                                     input.form-control.rounded#searchbox(type="text", placeholder="Search for fighters")
                                     button.btn.btn-outline-primary#submit(type="submit") Search
-                div.container-fluid
-                    h1.mt-4 Salty Database
-                    h2.mt-4 Current fight
+                div.container-fluid.mx-auto
+                    h2.mt-4.mx-auto Current fight
                     if (nodata)
                         p No fight data could be found 
                     else 
                         div.container
+                            h1 Tier: #{fightera.tier}
                             ul.list-group
                                     li.list-group-item
                                         div.col-xs-1 
-                                            a.page-link(href=`${url}/fighter/${fightera.name}`)
+                                            a.page-link(href=`${url}/fighter/?name=${fightera.name}&tier=${fightera.tier}`)
                                                 strong(style=" color: #e30e1f") #{fightera.name}
                                         div.col-xs-2(style=" color: #04850f") wins: #{fightera.wins}
                                         div.col-xs-3(style=" color: #e30e1f") losses: #{fightera.losses}
@@ -39,24 +35,24 @@ html
                                     strong VERSUS
                                     li.list-group-item
                                         div.col-xs-1 
-                                            a.page-link(href=`${url}/fighter/${fighterb.name}`)
+                                            a.page-link(href=`${url}/fighter/?name=${fighterb.name}&tier=${fightera.tier}`)
                                                 strong(style=" color: #0f0cc2") #{fighterb.name}
                                         div.col-xs-2(style=" color: #04850f") wins: #{fighterb.wins}
                                         div.col-xs-3(style=" color: #e30e1f") losses: #{fighterb.losses}
                                         div.col-xs-4 winrate: #{fighterb.wins/(fighterb.wins+fighterb.losses)*100}%
-                    if (pastFights)
-                        br
-                        div.container
-                            h3  Past matchups
-                            ul.list-group
-                            each fight in pastFights
-                                br
-                                li.list-group-item
-                                    div.col-xs-1 
-                                        if (fight.winner === fightera.name)
-                                            div.col-xs-2(style=" color: #e30e1f") #{fightera.name} WON
-                                        else
-                                            div.col-xs-2(style=" color: #0f0cc2") #{fighterb.name} WON
+                        if (pastFights)
+                            br
+                            div.container
+                                h3  Past matchups
+                                ul.list-group
+                                each fight in pastFights
+                                    br
+                                    li.list-group-item
+                                        div.col-xs-1 
+                                            if (fight.data.winner === fightera.name)
+                                                div.col-xs-2(style=" color: #e30e1f") #{fightera.name} WON
+                                            else
+                                                div.col-xs-2(style=" color: #0f0cc2") #{fighterb.name} WON
         footer.footer.bg-light.text-lg-start.text-center.fixed-bottom
             section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom 
                 div.me-5.d-none.d-lg-block
