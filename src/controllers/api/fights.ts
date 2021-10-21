@@ -16,14 +16,17 @@ async function insertFight(req:Request, res:Response) {
 }
 
 async function getFightsBoth(req:Request, res:Response) {
-    const {fightera, fighterb, tier, limit, page} = req.query;
+    const {fightera, fighterb, tier, page, previous} = req.query;
     if (typeof fightera === 'string' &&  typeof fighterb === 'string' && typeof tier === 'string') {
-        let lim:number|undefined = undefined;
         let pag:string|undefined = undefined;
-        if (limit) lim = Number(limit);
         if (typeof page === 'string') pag = page;
+        let prev:boolean|undefined = undefined;
+        if (previous) {
+            if (previous === 'false') prev = false;
+            if (previous === 'true') prev = true;
+        }
         
-        const response = await fightsModel.getFightsBoth(req.url, fightera, fighterb, tier, lim, pag);
+        const response = await fightsModel.getFightsBoth(req.url, fightera, fighterb, tier, undefined, pag, prev);
         if (response) {
             console.log("Got fights");
             res.status(200).send(response);
@@ -39,14 +42,17 @@ async function getFightsBoth(req:Request, res:Response) {
 }
 
 async function getFightsOne(req:Request, res:Response) {
-    const { fighter, tier, limit, page } = req.query;
+    const { fighter, tier, page, previous } = req.query;
     if (typeof fighter === 'string' && typeof tier === 'string') { 
-        let lim:number|undefined = undefined;
         let pag:string|undefined = undefined;
-        if (limit) lim = Number(limit);
         if (typeof page === 'string') pag = page;
+        let prev:boolean|undefined = undefined;
+        if (previous) {
+            if (previous === 'false') prev = false;
+            if (previous === 'true') prev = true;
+        }
         
-        const response = await fightsModel.getFightsOne(req.url, fighter, tier, lim, pag);
+        const response = await fightsModel.getFightsOne(req.url, fighter, tier, undefined, pag, prev);
         if (response) {
             console.log("Got fights");
             res.status(200).send(response);

@@ -33,33 +33,29 @@ html
                 div.container
                     h3  Past fights
                     ul.list-group
-                    each fight in fights
-                        br
-                        li.list-group-item
-                            div.col-xs-1 
-                                strong VERSUS #{fight.data.timestamp}
-                                if (fight.data.fightera === fighter.name)
-                                    a.page-link(href=`${url}/fighter/?name=${fight.data.fighterb}&tier=${fight.data.tier}`)
-                                        strong #{fight.data.fighterb} 
+                        each fight in fights
+                            br
+                            li.list-group-item
+                                div.col-xs-1 
+                                    strong VERSUS #{fight.data.timestamp}
+                                    if (fight.data.fightera === fighter.name)
+                                        a.page-link(href=`${url}/fighter/?name=${fight.data.fighterb}&tier=${fight.data.tier}`)
+                                            strong #{fight.data.fighterb} 
+                                    else
+                                        a.page-link(href=`${url}/fighter/?name=${fight.data.fightera}&tier=${fight.data.tier}`)
+                                            strong #{fight.data.fightera} 
+                                if (fight.data.winner === fighter.name)
+                                    div.col-xs-2(style=" color: #04850f") WON
                                 else
-                                    a.page-link(href=`${url}/fighter/?name=${fight.data.fightera}&tier=${fight.data.tier}`)
-                                        strong #{fight.data.fightera} 
-                            if (fight.data.winner === fighter.name)
-                                div.col-xs-2(style=" color: #04850f") WON
-                            else
-                                div.col-xs-2(style=" color: #e30e1f") LOST
-                div.text-lg-start.text-center
-                section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom
-                    div.me-5.d-none.d-lg-block
-                        | Items per page: 
-                        if(page)
-                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&page=${page}&limit=10`) 10   
-                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&page=${page}&limit=50`) 50   
-                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&page=${page}&limit=100`) 100    
-                        else
-                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&limit=10`) 10   
-                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&limit=50`) 50   
-                            a(href=`${nextUrl}/?name=${fighter.name}&tier=${fighter.tier}&limit=100`) 100    
+                                    div.col-xs-2(style=" color: #e30e1f") LOST
+                nav(aria-label='Page navigation')
+                ul.pagination.justify-content-center
+                    if (before)
+                        li.page-item
+                            a.page-link(href=`${nextUrl}/?name=${name}&tier=${tier}&page=${before[0].id}&previous=true`) Previous
+                    if (after)
+                        li.page-item
+                            a.page-link(href=`${nextUrl}/?name=${name}&tier=${tier}&page=${after[0].id}&previous=false`) Next
         else
             div.container.justify-content-center.mx-auto.text-center
                 h2 Fighter not found

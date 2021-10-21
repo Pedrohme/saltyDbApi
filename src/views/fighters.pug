@@ -1,5 +1,10 @@
 - var nextUrl = `${url}/fighter/search`
 
+if(limit)
+    - var lim = limit
+else
+    - var lim = 10
+
 html
     head
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
@@ -34,22 +39,10 @@ html
                 ul.pagination.justify-content-center
                     if (before)
                         li.page-item
-                            a.page-link(href=`${nextUrl}/?name=${name}&page=${before}&limit=${limit}`) Previous
+                            a.page-link(href=`${nextUrl}/?name=${name}&page=${before[0].id}&previous=true`) Previous
                     if (after)
                         li.page-item
-                            a.page-link(href=`${nextUrl}/?name=${name}&page=${after}&limit=${limit}`) Next
-            div.text-lg-start.text-center
-                section.d-flex.justify-content-center.justify-content-lg-between.p-4.border-bottom
-                    div.me-5.d-none.d-lg-block
-                        | Items per page: 
-                        if(page)
-                            a(href=`${nextUrl}/?name=${name}&page=${page}&limit=10`) 10   
-                            a(href=`${nextUrl}/?name=${name}&page=${page}&limit=50`) 50   
-                            a(href=`${nextUrl}/?name=${name}&page=${page}&limit=100`) 100    
-                        else
-                            a(href=`${nextUrl}/?name=${name}&limit=10`) 10   
-                            a(href=`${nextUrl}/?name=${name}&limit=50`) 50   
-                            a(href=`${nextUrl}/?name=${name}&limit=100`) 100    
+                            a.page-link(href=`${nextUrl}/?name=${name}&page=${after[0].id}&previous=false`) Next
         else
             div.container
                 h2 No fighters found

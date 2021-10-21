@@ -2,7 +2,7 @@ import {client, q} from "../db/db";
 import nCache from "node-cache";
 
 const tiers = ["P", "B", "A", "S", "X"];
-const limitValues = [10, 50, 100];
+const limitValues = [64];
 
 export interface Fight {
     tier:string;
@@ -55,7 +55,7 @@ async function insertFight(tier:string, fightera:string, fighterb:string, winner
     return null;
 }
 
-async function getFightsBoth(url:string, fightera:string, fighterb:string, tier:string, limit = 10, page?:string) {
+async function getFightsBoth(url:string, fightera:string, fighterb:string, tier:string, limit = 64, page?:string, previous = false) {
     if (fightera.length <= 64 && fighterb.length <= 64 && tiers.includes(tier) && limitValues.includes(limit)) {
         const cacheKey = "__cache__" + url;
         const value = await cache.get(cacheKey);
@@ -70,7 +70,12 @@ async function getFightsBoth(url:string, fightera:string, fighterb:string, tier:
             pageOptions.size = limit;
         }
         if(page) {
-            pageOptions.after = page;
+            if (previous) {
+                pageOptions.before = [page];
+            }
+            else {
+                pageOptions.after = [page];
+            }
         }
 
         try {
@@ -104,7 +109,7 @@ async function getFightsBoth(url:string, fightera:string, fighterb:string, tier:
     return null;
 }
 
-async function getFightsOne(url:string, fighter:string, tier:string, limit = 10, page?:string) {
+async function getFightsOne(url:string, fighter:string, tier:string, limit = 64, page?:string, previous = false) {
     if (fighter.length <= 64 && tiers.includes(tier) && limitValues.includes(limit)) {
         const cacheKey = "__cache__" + url;
         const value = await cache.get(cacheKey);
@@ -119,7 +124,12 @@ async function getFightsOne(url:string, fighter:string, tier:string, limit = 10,
             pageOptions.size = limit;
         }
         if(page) {
-            pageOptions.after = page;
+            if (previous) {
+                pageOptions.before = [page];
+            }
+            else {
+                pageOptions.after = [page];
+            }
         }
 
         try {

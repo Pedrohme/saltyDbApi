@@ -2,7 +2,7 @@ import {client, q} from "../db/db";
 import nCache from "node-cache";
 
 const tiers = ["P", "B", "A", "S", "X"];
-const limitValues = [10, 50, 100];
+const limitValues = [64];
 
 export interface Fighter {
     name:string;
@@ -120,7 +120,7 @@ async function updateFighter(wins:number, losses:number, name:string, tier:strin
     return null;
 }
 
-async function searchFighter(url:string, name:string, limit = 10, page?:string) {
+async function searchFighter(url:string, name:string, limit = 64, page?:string, previous = false) {
     if (name.length <= 64 && limitValues.includes(limit)) {
         const cacheKey = "__cache__" + url;
         const value = await cache.get(cacheKey);
@@ -129,12 +129,18 @@ async function searchFighter(url:string, name:string, limit = 10, page?:string) 
             return value as SearchByNameResult;
         }
 
+        
         const pageOptions: {[k:string]: any} = {};
         if (limit) {
             pageOptions.size = limit;
         }
         if(page) {
-            pageOptions.after = page;
+            if (previous) {
+                pageOptions.before = [page];
+            }
+            else {
+                pageOptions.after = [page];
+            }
         }
 
         try {

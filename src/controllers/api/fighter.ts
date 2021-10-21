@@ -1,5 +1,6 @@
 import fighterModel from "../../models/fighter";
 import { Request, Response } from "express";
+import { client, q } from "../../db/db";
 
 async function insertFighter(req:Request, res:Response) {
     const { name, tier } = req.body;
@@ -55,14 +56,21 @@ async function updateFighter(req:Request, res:Response) {
 }
 
 async function searchFighter(req:Request, res:Response) {
-    const { page, limit, name} = req.query;
+    const { page, name, previous } = req.query;
 
     if (typeof name === 'string') {
-        let lim:number|undefined = undefined;
         let pag:string|undefined = undefined;
-        if (limit) lim = Number(limit);
-        if (typeof page === 'string') pag = page;
-        const response = await fighterModel.searchFighter(req.url, name, lim, pag);
+        let prev:boolean|undefined = undefined;
+        if (previous) {
+            if (previous === 'false') prev = false;
+            if (previous === 'true') prev = true;
+        }
+        if (typeof page === 'string') {
+            pag = await client.query(
+                q.Ref(q.Collection('fighter'), page)
+            );
+        }
+        const response = await fighterModel.searchFighter(req.url, name, undefined, pag, prev);
         if (response) {
             console.log("Query successful", response);
             res.status(200).send(response);
